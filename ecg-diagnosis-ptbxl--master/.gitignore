@@ -1,0 +1,22 @@
+
+__pycache__/
+*.pyc
+venv/
+*.egg-info/
+
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+
+checkpoints/*
+!checkpoints/.gitkeep
+logs/*
+!logs/.gitkeep
+
+*.png
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/

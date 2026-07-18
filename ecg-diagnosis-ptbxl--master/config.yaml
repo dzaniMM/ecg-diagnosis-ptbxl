@@ -1,0 +1,53 @@
+# =============================================================================
+# Konfiguracija projekta - PTB-XL Multi-Lead EKG Klasifikacija
+# =============================================================================
+
+podaci:
+  putanja_ptbxl: "data/raw/ptb-xl"
+  sampling_rate: 100              # 100 ili 500 (Hz)
+  putanja_processed: "data/processed"
+
+model:
+  tip: "transformer"                 # "cnn", "bigru" ili "transformer"
+  in_channels: 12
+  hidden_size: 128              # bigru: veličina skrivenog stanja / transformer: d_model
+  num_layers: 1                # bigru: broj GRU slojeva / transformer: broj encoder slojeva
+                                 # (isto polje za oba tipa - vodi računa pri prebacivanju model.tip)
+  nhead: 4                      # koristi se samo za transformer (broj attention glava, mora deliti hidden_size)
+  num_classes: 5
+  dropout: 0.2
+
+trening:
+  batch_size: 64
+  epochs: 40
+  optimizer: "adamw"              # "adam", "adamw"
+  learning_rate: 0.0005
+  scheduler: true              # false = LR ostaje konstantan (bez cosine decay-a/warmup-a)
+  min_lr: 0.0000005              # eta_min za CosineAnnealingLR (donja granica LR-a)
+  warmup_epochs: 0              # linearno zagrevanje LR-a pre cosine decay-a (0 = bez warmup-a)
+  weight_decay: 0.0001
+  grad_clip: 1.0              # max L2 norm gradijenta (0 = bez clipping-a) - korisno protiv exploding gradijenata kod Transformer/BiGRU
+  early_stopping_patience: 20
+  device: "cuda"  
+              # "cuda" ili "cpu"
+  # WeightedRandomSampler - retki uzorci (HYP, CD) se češće izvlače u batch
+  weighted_sampler: true
+  # Random lead masking (samo trening skup) - gasi nasumično izabrane odvode
+  # po uzorku, da bi model naučio redundantnije korišćenje svih 12 odvoda
+  # umesto oslanjanja na par "omiljenih" (nalaz lead occlusion analize za HYP).
+  # lead_masking_p=0 isključuje augmentaciju
+  lead_masking_p: 0.3
+  lead_masking_broj: 1           # koliko odvoda ugasiti kad se augmentacija primeni
+loss:
+  tip: "focal"                  # "focal" ili "bce"
+  # alpha po klasi, redosled mora pratiti SUPERKLASE: [NORM, MI, STTC, CD, HYP]
+  alpha: [0.1363, 0.2371, 0.2477, 0.2647, 0.4895]
+  gamma: 1
+
+kfold:
+  # koji foldovi (od 1-9) rotiraju kao validacija u train_kfold.py - svaki
+  foldovi: [2,4,5,6,7,9]
+
+putanje:
+  checkpoints: "checkpoints"
+  logs: "logs"
