@@ -101,7 +101,7 @@ preko adaptivnog/global poolinga).
   **out-of-fold** predikcijama (svaki trening uzorak ocenjen samo modelom
   koji ga nije video), izbegavajući curenje i iz test i iz trening podataka.
 
-## 8. Ključni eksperimenti i nalazi
+## 8. Ključni eksperimenti 
 
 | Eksperiment | Rezultat |
 |---|---|
@@ -109,7 +109,7 @@ preko adaptivnog/global poolinga).
 | SE kanalska pažnja | Zadržano, nije izolovano škodilo |
 | Kernel widening (5→11/15) | Bez jasnog dobitka na CNN-u |
 | Dilated convolution (dilation 2/4/8) | Mešoviti rezultati, CD (ciljana klasa) se nije pomerio - vraćeno na baseline |
-| Weighted sampler | Pomaže CNN-u (+0.003 macro AUC), blago šteti BiGRU-u (overfitting na ponovljene uzorke) |
+| Weighted sampler | Pomaže CNN-u (+0.003 macro AUC) |
 | Transformer poboljšanja (attention pool, dublji encoder, LR warmup) | Nije promenilo rang - Transformer ostaje najslabiji pojedinačni model, verovatno zbog nedovoljno podataka za self-attention (slabija induktivna pristrasnost od CNN/GRU) |
 | Grad-CAM analiza (CNN) | Model se fokusira na fiziološki smislene delove signala - QRS kompleks za MI/CD (kod CD-a šire, u skladu sa proširenim QRS-om), ST/T segment za STTC i HYP; potvrđuje da mreža ne uči artefakte |
 | Lead occlusion analiza (HYP, 262 primera) | Model dominantno koristi **V1** (deo Sokolow-Lyon kriterijuma), dok **I, V4, V5** deluju kao suzbijajući (ne pozitivan) dokaz, a **V6** je zanemaren - model ne primenjuje pun bilateralni kriterijum (V1 + V5/V6), verovatan uzrok slabog HYP recall-a |
